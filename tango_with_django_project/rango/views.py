@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rango.models import Category, Page
+from .forms import UserForm, UserProfileForm
 
 
 def index(request):
@@ -26,3 +27,9 @@ def category(request, category_name_slug):
 
 def about(request):
     return HttpResponse("Rango says here is the about page")
+
+
+def register(request):
+    registered = False
+
+    if request.method == 'POST'
