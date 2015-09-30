@@ -6,4 +6,5 @@ urlpatterns = patterns('',
                        url(r'^about/$', views.about, name='about'),
                        url(r'^category/(?P<category_name_slug>[\w\-]+)/$',
                            views.category, name='category'),
-                       url(r'^register/$', views.register, name='register'),)
+                       url(r'^register/$', views.register, name='register'),
+                       url(r'^login/$', views.user_login, name='login'),)

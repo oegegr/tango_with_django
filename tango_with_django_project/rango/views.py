@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import authenticate, login
 from .models import Category, Page
 from .forms import UserForm, UserProfileForm
 
@@ -33,8 +34,8 @@ def register(request):
     registered = False
 
     if request.method == 'POST':
-        user_form = UserForm(data=request)
-        profile_form = UserProfileForm(data=request)
+        user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
@@ -44,7 +45,7 @@ def register(request):
             profile = profile_form.save(commit=False)
             profile.user = user
             if 'picture' in request.FILES:
-                profile.picture = request['picture']
+                profile.picture = request.FILES['picture']
             profile.save()
             registered = True
         else:
@@ -54,3 +55,23 @@ def register(request):
         profile_form = UserProfileForm()
     return render(request, 'rango/register.html',
                    {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
+
+
+def user_login(request):
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/rango/')
+            else:
+                return HttpResponse("Your Rango account is disabled")
+        else:
+            print("Invalid login details: {0}, {1}".format(username, password))
+            return HttpResponse("Invalid login detail supplied.")
+    else:
+        return render(request, 'rango/login.html', {})
