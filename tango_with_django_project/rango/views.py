@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from .models import Category, Page
 from .forms import UserForm, UserProfileForm, CategoryForm, PageForm
 
@@ -57,12 +58,13 @@ def add_page(request, category_name_slug):
                 page.views = 0
                 page.save()
                 return category(request, category_name_slug)
-            else:
-                print(form.errors)
         else:
-            form = PageForm()
-        context_dict = {'form': form, 'category': cat}
-        return render(request, 'rango/add_category.html', context_dict)
+            print(form.errors)
+    else:
+        form = PageForm()
+
+    context_dict = {'form': form, 'category': cat}
+    return render(request, 'rango/add_page.html', context_dict)
 
 
 
@@ -111,3 +113,8 @@ def user_login(request):
             return HttpResponse("Invalid login detail supplied.")
     else:
         return render(request, 'rango/login.html', {})
+
+
+@login_required
+def restricted(request):
+    return HttpResponse("Since you're logged in, you can see it!")
