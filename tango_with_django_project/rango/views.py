@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Category, Page
 from .forms import UserForm, UserProfileForm, CategoryForm, PageForm
@@ -31,6 +31,7 @@ def about(request):
     return HttpResponse("Rango says here is the about page")
 
 
+@login_required
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -44,6 +45,7 @@ def add_category(request):
     return render(request, 'rango/add_category.html', {'form': form})
 
 
+@login_required
 def add_page(request, category_name_slug):
     try:
         cat = Category.objects.get(slug=category_name_slug)
@@ -114,6 +116,11 @@ def user_login(request):
     else:
         return render(request, 'rango/login.html', {})
 
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect('/rango/')
 
 @login_required
 def restricted(request):
