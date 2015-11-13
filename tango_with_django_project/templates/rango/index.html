@@ -1,9 +1,6 @@
-<! DOCTYPE html>
-<html>
-  <head>
-      <title>Rango</title>
-  </head>
-  <body>
+{% extends 'base.html' %}
+{% block title %}Rango{% endblock %}
+{% block body_block %}
       {% if user.is_authenticated %}
       <a href="/rango/add_category/">add Category</a>|
       <a href="/rango/restricted/">Restricted Page</a>|
@@ -35,6 +32,5 @@
       <strong>There are no category present.</strong>
     {% endif %}
 
-    <a href="/rango/about/">About</a
-
-</html>
+    <a href="/rango/about/">About</a>
+{% endblock %}
